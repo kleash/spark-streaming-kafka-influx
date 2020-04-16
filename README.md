@@ -1,0 +1,1 @@
+start using : PYSPARK_PYTHON="/home/shubham/Downloads/bigdata/anomaly-detection/ML network detection/venv2/bin/python" spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.4.1 networkdetection.py --master spark://shubham-thinkpad:7077

@@ -51,6 +51,10 @@ def parse_log_line(log_line):
     nxx = 0
     twoxx = 0
     # If response code is 2xx, then we set the count for twoxx as 1
+
+    if line is None:
+        return None
+
     if str(line.group(8)).startswith("2"):
         twoxx = 1
     # If response code is 5xx, then we set the count for nxx is 1
@@ -153,10 +157,10 @@ stream_data_init = KafkaUtils.createDirectStream(ssc, [topic], {"metadata.broker
 # )
 print(type(stream_data_init))
 stream_data = stream_data_init.map(
-    lambda s: parse_log_line(s[1])).reduceByKeyAndWindow(extract_features,
-                                                            lambda a, b: [a[0] - b[0],
-                                                                          a[1] - b[1]], 60,
-                                                            60).map(
+    lambda s: parse_log_line(s[1])).filter(lambda s: s is not None).reduceByKeyAndWindow(extract_features,
+                                                                                     lambda a, b: [a[0] - b[0],
+                                                                                                   a[1] - b[1]], 60,
+                                                                                     60).map(
     lambda s: predict_cluster(s, trained_model))
 
 # stream_data = ssc.textFileStream(streaming_log_folder)\
